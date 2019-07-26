@@ -1,4 +1,6 @@
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
@@ -16,9 +18,12 @@ public class ClassNodeFinder {
             @Override
             public void visit(ClassOrInterfaceDeclaration cd, List<ClassInterfaceDeclaration> collector) {
                 super.visit(cd, collector);
-                String accessSpecifier = cd.getAccessSpecifier().toString();
+                NodeList<Modifier> specifiers = cd.getModifiers();
                 String name = cd.getNameAsString();
-                ClassInterfaceDeclaration dec = new ClassInterfaceDeclaration(accessSpecifier, name);
+                boolean isInterface = cd.isInterface();
+                String accessSpecifier = specifiers.size() >= 1 ? specifiers.get(0).toString(): "";
+                String nonAccessModifier = specifiers.size() >= 2 ? specifiers.get(1).toString(): "";
+                ClassInterfaceDeclaration dec = new ClassInterfaceDeclaration(isInterface, accessSpecifier, nonAccessModifier, name);
                 collector.add(dec);
             }
         };
@@ -31,44 +36,24 @@ public class ClassNodeFinder {
         return matches;
     }
 
-    public boolean declarationExists(String accessSpecifier, String name) {
-        List<ClassInterfaceDeclaration> matches = this.crawlAST();
-        for (int i = 0; i < matches.size(); i++) {
-            ClassInterfaceDeclaration temp = matches.get(i);
-            if (temp.getAccessSpecifier().equals(accessSpecifier) && temp.getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean correctAmountOfDeclarations(String accessSpecifier, int amount){
+    //For a given class specification checks whether exactly the desired cardinality is present in the AST
+    public boolean correctAmountOfDeclarations(String accessSpecifier, String nonAccessSpecifier, String name, int cardinality){
         List<ClassInterfaceDeclaration> matches = this.crawlAST();
         int count = 0;
         for (int i = 0; i < matches.size(); i++) {
             ClassInterfaceDeclaration temp = matches.get(i);
-            if(temp.getAccessSpecifier().equals(accessSpecifier)){
+            String acs = temp.getAccessSpecifier().replaceAll("\\s+","");
+            String nam = temp.getNonAccessModifier().replaceAll("\\s+","");
+            String n = temp.getName().replaceAll("\\s+","");
+            if(
+                (acs.equals(accessSpecifier) || accessSpecifier == "") &&
+                (nam.equals(nonAccessSpecifier) || nonAccessSpecifier == "") &&
+                (n.equals(name) || name == "") &&
+                !temp.isInterface()
+            ){
                 ++count;
             }
         }
-        return count == amount;
-    }
-}
-
-class ClassInterfaceDeclaration{
-    private final String accessSpecifier;
-    private final String name;
-
-    public ClassInterfaceDeclaration(String accessSpecifier, String name){
-        this.accessSpecifier = accessSpecifier;
-        this.name = name;
-    }
-
-    public String getAccessSpecifier() {
-        return accessSpecifier;
-    }
-
-    public String getName() {
-        return name;
+        return count == cardinality;
     }
 }
