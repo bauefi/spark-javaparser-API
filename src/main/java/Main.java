@@ -1,5 +1,6 @@
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import spark.Request;
 
 import static spark.Spark.*;
 
@@ -12,37 +13,59 @@ public class Main {
         This Route checks for a given code snippet whether the correct amount of classes with the specified characteristics exists
         */
         post("/class", (request, response) -> {
-            // 1. Validate query parameters
-            if(!validateQueryParams(
-                    request.queryParams("code"),
-                    request.queryParams("accessSpecifier"),
-                    request.queryParams("nonAccesSpecifier"),
-                    request.queryParams("name"),
-                    request.queryParams("cardinality"))){
+            // 1. Validate request parameters
+            if(!validateRequestParams(request)){
                 response.status(400);
                 return "Incorrect Query Parameters";
             }
 
             // 2. Translate query parameters
             String code                 = request.queryParams("code");
-            String accessSpecifier      = parameterTranslater.translateAccessSpecifier(request.queryParams("accessSpecifier"));
-            String nonAccessModifier    = parameterTranslater.translateNonAccessModifier(request.queryParams("nonAccesSpecifier"));
             String name                 = request.queryParams("name");
-            Integer cardinality         = parameterTranslater.translateCardinality(request.queryParams("cardinality"));
-            System.out.println(accessSpecifier);
-            System.out.println(nonAccessModifier);
-            System.out.println(name);
-            System.out.println(cardinality);
+            String accessSpecifier      = ParameterTranslater.translateAccessSpecifier(request.queryParams("accessSpecifier"));
+            String nonAccessModifier    = ParameterTranslater.translateNonAccessModifier(request.queryParams("nonAccesSpecifier"));
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
             // 3. Query code
-            CompilationUnit compilationUnit = StaticJavaParser.parse(code);
-            ClassNodeFinder classNodeFinder = new ClassNodeFinder(compilationUnit);
-            response.status(200);
-            return classNodeFinder.correctAmountOfDeclarations(accessSpecifier, nonAccessModifier, name, cardinality);
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                ClassInterfaceNodeFinder classNodeFinder = new ClassInterfaceNodeFinder(compilationUnit);
+                response.status(200);
+                return classNodeFinder.correctAmountOfDeclarations(false, accessSpecifier, nonAccessModifier, name, cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
         });
 
+        /*
+        This Route checks for a given code snippet whether the correct amount of interfaces with the specified characteristics exists
+        */
         post("/interface", (request, response) -> {
-            response.status(200);
-            return true;
+            // 1. Validate request parameters
+            if(!validateRequestParams(request)){
+                response.status(400);
+                return "Incorrect Query Parameters";
+            }
+
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            String name                 = request.queryParams("name");
+            String accessSpecifier      = ParameterTranslater.translateAccessSpecifier(request.queryParams("accessSpecifier"));
+            String nonAccessModifier    = ParameterTranslater.translateNonAccessModifier(request.queryParams("nonAccesSpecifier"));
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                ClassInterfaceNodeFinder classNodeFinder = new ClassInterfaceNodeFinder(compilationUnit);
+                response.status(200);
+                return classNodeFinder.correctAmountOfDeclarations(true, accessSpecifier, nonAccessModifier, name, cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
+
         });
 
         post("/method", (request, response) -> {
@@ -81,9 +104,14 @@ public class Main {
     }
 
     /*------------------------------------ Helper Functions -----------------------------------------*/
-    //No query parameters can be null
-    private static boolean validateQueryParams(String code, String accessSpecifier, String nonAccessModifier, String name, String cardinality) {
-        return code != null && accessSpecifier != null && nonAccessModifier != null && name != null && cardinality != null;
+    //No request parameter can be null
+    private static boolean validateRequestParams(Request request) {
+        String code = request.queryParams("code");
+        String accessSpecifier = request.queryParams("accessSpecifier");
+        String nonAccesSpecifier = request.queryParams("nonAccesSpecifier");
+        String name = request.queryParams("name");
+        String cardinality = request.queryParams("cardinality");
+        return code != null && accessSpecifier != null && nonAccesSpecifier != null && name != null && cardinality != null;
     }
 }
 

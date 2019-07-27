@@ -16,10 +16,13 @@ public class playground {
                 "        \n" +
                 "    }\n" +
                 "}";
+        String code2 = "pulic interface test{\n" +
+                "     void printSomething();\n" +
+                "}";
 
-        CompilationUnit cu = StaticJavaParser.parse(code);
-        ClassNodeFinder cf = new ClassNodeFinder(cu);
-        System.out.println(cf.correctAmountOfDeclarations("public", "static", "",0));
+        CompilationUnit cu = StaticJavaParser.parse(code2);
+        ClassInterfaceNodeFinder cf = new ClassInterfaceNodeFinder(cu);
+        System.out.println(cf.correctAmountOfDeclarations(true,"public", "", "",1));
     }
 }
 

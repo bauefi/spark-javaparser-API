@@ -1,4 +1,4 @@
-public class parameterTranslater {
+public class ParameterTranslater {
 
     static String translateAccessSpecifier(String accessSpecifier) {
         switch(accessSpecifier) {

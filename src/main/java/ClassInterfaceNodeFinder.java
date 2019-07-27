@@ -8,11 +8,11 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassNodeFinder {
+public class ClassInterfaceNodeFinder {
     CompilationUnit compilationUnit;
     VoidVisitor<List<ClassInterfaceDeclaration>> visitor;
 
-    public ClassNodeFinder(CompilationUnit compilationUnit){
+    public ClassInterfaceNodeFinder(CompilationUnit compilationUnit){
         this.compilationUnit = compilationUnit;
         this.visitor = new VoidVisitorAdapter<List<ClassInterfaceDeclaration>>() {
             @Override
@@ -36,8 +36,8 @@ public class ClassNodeFinder {
         return matches;
     }
 
-    //For a given class specification checks whether exactly the desired cardinality is present in the AST
-    public boolean correctAmountOfDeclarations(String accessSpecifier, String nonAccessSpecifier, String name, int cardinality){
+    //For a given class or Interface specification checks whether exactly the desired cardinality is present in the AST
+    public boolean correctAmountOfDeclarations(Boolean isInterface, String accessSpecifier, String nonAccessSpecifier, String name, int cardinality){
         List<ClassInterfaceDeclaration> matches = this.crawlAST();
         int count = 0;
         for (int i = 0; i < matches.size(); i++) {
@@ -45,15 +45,19 @@ public class ClassNodeFinder {
             String acs = temp.getAccessSpecifier().replaceAll("\\s+","");
             String nam = temp.getNonAccessModifier().replaceAll("\\s+","");
             String n = temp.getName().replaceAll("\\s+","");
+            System.out.println(acs);
+            System.out.println(nam);
+
             if(
                 (acs.equals(accessSpecifier) || accessSpecifier == "") &&
                 (nam.equals(nonAccessSpecifier) || nonAccessSpecifier == "") &&
                 (n.equals(name) || name == "") &&
-                !temp.isInterface()
+                (temp.isInterface() == isInterface)
             ){
                 ++count;
             }
         }
         return count == cardinality;
     }
+
 }
