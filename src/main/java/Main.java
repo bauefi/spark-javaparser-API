@@ -14,7 +14,7 @@ public class Main {
         */
         post("/class", (request, response) -> {
             // 1. Validate request parameters
-            if(!validateRequestParams(request)){
+            if(!validateRequestParamsClassInterface(request)){
                 response.status(400);
                 return "Incorrect Query Parameters";
             }
@@ -43,7 +43,7 @@ public class Main {
         */
         post("/interface", (request, response) -> {
             // 1. Validate request parameters
-            if(!validateRequestParams(request)){
+            if(!validateRequestParamsClassInterface(request)){
                 response.status(400);
                 return "Incorrect Query Parameters";
             }
@@ -69,8 +69,30 @@ public class Main {
         });
 
         post("/method", (request, response) -> {
-            response.status(200);
-            return true;
+            // 1. Validate request parameters
+            if(!validateRequestParamsFunction(request)){
+                response.status(400);
+                return "Incorrect Query Parameters";
+            }
+
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            String name                 = request.queryParams("name");
+            String dataType             = request.queryParams("dataType");
+            String accessSpecifier      = ParameterTranslater.translateAccessSpecifier(request.queryParams("accessSpecifier"));
+            String nonAccessModifier    = ParameterTranslater.translateNonAccessModifier(request.queryParams("nonAccesSpecifier"));
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                FunctionNodeFinder classNodeFinder = new FunctionNodeFinder(compilationUnit);
+                response.status(200);
+                return classNodeFinder.correctAmountOfDeclarations(accessSpecifier, nonAccessModifier, dataType, name, cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
         });
 
         post("/variable", (request, response) -> {
@@ -105,13 +127,24 @@ public class Main {
 
     /*------------------------------------ Helper Functions -----------------------------------------*/
     //No request parameter can be null
-    private static boolean validateRequestParams(Request request) {
+    private static boolean validateRequestParamsClassInterface(Request request) {
         String code = request.queryParams("code");
         String accessSpecifier = request.queryParams("accessSpecifier");
         String nonAccesSpecifier = request.queryParams("nonAccesSpecifier");
         String name = request.queryParams("name");
         String cardinality = request.queryParams("cardinality");
         return code != null && accessSpecifier != null && nonAccesSpecifier != null && name != null && cardinality != null;
+    }
+
+    //No request parameter can be null
+    private static boolean validateRequestParamsFunction(Request request) {
+        String code = request.queryParams("code");
+        String accessSpecifier = request.queryParams("accessSpecifier");
+        String nonAccesSpecifier = request.queryParams("nonAccesSpecifier");
+        String dataType = request.queryParams("dataType");
+        String name = request.queryParams("name");
+        String cardinality = request.queryParams("cardinality");
+        return code != null && accessSpecifier != null && nonAccesSpecifier != null && dataType != null && name != null && cardinality != null;
     }
 }
 

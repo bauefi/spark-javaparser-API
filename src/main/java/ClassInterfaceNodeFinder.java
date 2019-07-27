@@ -17,19 +17,19 @@ public class ClassInterfaceNodeFinder {
         this.visitor = new VoidVisitorAdapter<List<ClassInterfaceDeclaration>>() {
             @Override
             public void visit(ClassOrInterfaceDeclaration cd, List<ClassInterfaceDeclaration> collector) {
-                super.visit(cd, collector);
-                NodeList<Modifier> specifiers = cd.getModifiers();
-                String name = cd.getNameAsString();
-                boolean isInterface = cd.isInterface();
-                String accessSpecifier = specifiers.size() >= 1 ? specifiers.get(0).toString(): "";
-                String nonAccessModifier = specifiers.size() >= 2 ? specifiers.get(1).toString(): "";
-                ClassInterfaceDeclaration dec = new ClassInterfaceDeclaration(isInterface, accessSpecifier, nonAccessModifier, name);
-                collector.add(dec);
+            super.visit(cd, collector);
+            NodeList<Modifier> specifiers = cd.getModifiers();
+            String name = cd.getNameAsString();
+            boolean isInterface = cd.isInterface();
+            String accessSpecifier = specifiers.size() >= 1 ? specifiers.get(0).toString(): "";
+            String nonAccessModifier = specifiers.size() >= 2 ? specifiers.get(1).toString(): "";
+            ClassInterfaceDeclaration dec = new ClassInterfaceDeclaration(isInterface, accessSpecifier, nonAccessModifier, name);
+            collector.add(dec);
             }
         };
     }
 
-    //Crawls the AST and returns all class declarations together with their access specifier
+    //Crawls the AST and returns all class and interface declarations
     private List<ClassInterfaceDeclaration> crawlAST(){
         List<ClassInterfaceDeclaration> matches = new ArrayList<>();
         this.visitor.visit(this.compilationUnit, matches);
