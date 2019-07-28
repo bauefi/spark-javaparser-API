@@ -70,7 +70,7 @@ public class Main {
 
         post("/method", (request, response) -> {
             // 1. Validate request parameters
-            if(!validateRequestParamsFunction(request)){
+            if(!validateRequestParamsFunctionVariable(request)){
                 response.status(400);
                 return "Incorrect Query Parameters";
             }
@@ -86,9 +86,9 @@ public class Main {
             // 3. Query code
             try {
                 CompilationUnit compilationUnit = StaticJavaParser.parse(code);
-                FunctionNodeFinder classNodeFinder = new FunctionNodeFinder(compilationUnit);
+                FunctionNodeFinder functionNodeFinder = new FunctionNodeFinder(compilationUnit);
                 response.status(200);
-                return classNodeFinder.correctAmountOfDeclarations(accessSpecifier, nonAccessModifier, dataType, name, cardinality);
+                return functionNodeFinder.correctAmountOfDeclarations(accessSpecifier, nonAccessModifier, dataType, name, cardinality);
             } catch(Exception e){
                 response.status(400);
                 return "Failed to query code, make sure the code snippet sent compiles";
@@ -96,8 +96,30 @@ public class Main {
         });
 
         post("/variable", (request, response) -> {
-            response.status(200);
-            return true;
+            // 1. Validate request parameters
+            if(!validateRequestParamsFunctionVariable(request)){
+                response.status(400);
+                return "Incorrect Query Parameters";
+            }
+
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            String name                 = request.queryParams("name");
+            String dataType             = request.queryParams("dataType");
+            String accessSpecifier      = ParameterTranslater.translateAccessSpecifier(request.queryParams("accessSpecifier"));
+            String nonAccessModifier    = ParameterTranslater.translateNonAccessModifier(request.queryParams("nonAccesSpecifier"));
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                VariableNodeFinder variableNodeFinder = new VariableNodeFinder(compilationUnit);
+                response.status(200);
+                return variableNodeFinder.correctAmountOfDeclarations(accessSpecifier, nonAccessModifier, dataType, name, cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
         });
 
         post("/if", (request, response) -> {
@@ -137,7 +159,7 @@ public class Main {
     }
 
     //No request parameter can be null
-    private static boolean validateRequestParamsFunction(Request request) {
+    private static boolean validateRequestParamsFunctionVariable(Request request) {
         String code = request.queryParams("code");
         String accessSpecifier = request.queryParams("accessSpecifier");
         String nonAccesSpecifier = request.queryParams("nonAccesSpecifier");

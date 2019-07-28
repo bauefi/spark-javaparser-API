@@ -46,10 +46,6 @@ public class FunctionNodeFinder {
             String nam = temp.getNonAccessModifier().replaceAll("\\s+","");
             String type = temp.getDatatype().replaceAll("\\s+","");
             String n = temp.getName().replaceAll("\\s+","");
-            System.out.println(acs);
-            System.out.println(nam);
-            System.out.println(type);
-            System.out.println(n);
 
             if(
                     (acs.equals(accessSpecifier) || accessSpecifier == "") &&
