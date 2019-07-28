@@ -16,23 +16,37 @@ public class playground {
                 "    }\n" +
                 "}";
 
-        String code2 = "public class test{\n" +
-                "    private int a = 10;\n" +
-                "    public String b = 5;\n" +
-                "    private final int c = 0;\n" +
-                "\n" +
-                "    public test(int a) {\n" +
-                "        this.a = a;\n" +
+        String code2 = "class test1{\n" +
+                "    int a, b = 0;\n" +
+                "    private int looping(){\n" +
+                "        for(int i=0;i <10; i++){\n" +
+                "            for(int j=0; j<10; i++){\n" +
+                "                if(true){\n" +
+                "                    System.out.print(i);\n" +
+                "                }\n" +
+                "            }\n" +
+                "        }\n" +
+                "        return 1;\n" +
                 "    }\n" +
                 "}";
 
-        CompilationUnit cu = StaticJavaParser.parse(code);
-        VariableNodeFinder cf = new VariableNodeFinder(cu);
-        System.out.println(cf.correctAmountOfDeclarations("public", "", "","", 0));
+        CompilationUnit cu = StaticJavaParser.parse(code2);
+        IfNodeFinder cf = new IfNodeFinder(cu);
+        System.out.println(cf.correctAmountOfOccurrences(1));
     }
 }
 
 
 class test1{
     int a, b = 0;
+    private int looping(){
+        for(int i=0;i <10; i++){
+            for(int j=0; j<10; i++){
+                if(true){
+                    System.out.print(i);
+                }
+            }
+        }
+        return 1;
+    }
 }

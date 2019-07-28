@@ -123,20 +123,64 @@ public class Main {
         });
 
         post("/if", (request, response) -> {
-            response.status(200);
-            return true;
+            // 1. Validate request parameters
+            validateRequestParamsElement(request);
+
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                IfNodeFinder ifNodeFinder = new IfNodeFinder(compilationUnit);
+                response.status(200);
+                return ifNodeFinder.correctAmountOfOccurrences(cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
         });
 
         post("/for", (request, response) -> {
-            response.status(200);
-            return true;
+            // 1. Validate request parameters
+            validateRequestParamsElement(request);
+
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                ForNodeFinder forNodeFinder = new ForNodeFinder(compilationUnit);
+                response.status(200);
+                return forNodeFinder.correctAmountOfOccurrences(cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
         });
 
         post("/while", (request, response) -> {
-            response.status(200);
-            return true;
-        });
+            // 1. Validate request parameters
+            validateRequestParamsElement(request);
 
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                WhileNodeFinder whileNodeFinder = new WhileNodeFinder(compilationUnit);
+                response.status(200);
+                return whileNodeFinder.correctAmountOfOccurrences(cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
+        });
     }
 
     static int getHerokuAssignedPort() {
@@ -167,6 +211,12 @@ public class Main {
         String name = request.queryParams("name");
         String cardinality = request.queryParams("cardinality");
         return code != null && accessSpecifier != null && nonAccesSpecifier != null && dataType != null && name != null && cardinality != null;
+    }
+
+    private static boolean validateRequestParamsElement(Request request){
+        String code = request.queryParams("code");
+        String cardinality = request.queryParams("cardinality");
+        return code != null && cardinality != null;
     }
 }
 
