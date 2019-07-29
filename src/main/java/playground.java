@@ -1,6 +1,6 @@
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-
+import com.github.javaparser.ast.stmt.TryStmt;
 
 
 public class playground {
@@ -16,37 +16,22 @@ public class playground {
                 "    }\n" +
                 "}";
 
-        String code2 = "class test1{\n" +
-                "    int a, b = 0;\n" +
-                "    private int looping(){\n" +
-                "        for(int i=0;i <10; i++){\n" +
-                "            for(int j=0; j<10; i++){\n" +
-                "                if(true){\n" +
-                "                    System.out.print(i);\n" +
-                "                }\n" +
-                "            }\n" +
-                "        }\n" +
-                "        return 1;\n" +
+        String code2 = "public class MyClass {\n" +
+                "  public static void main(String[] args) {\n" +
+                "    try {\n" +
+                "      int[] myNumbers = {1, 2, 3};\n" +
+                "      System.out.println(myNumbers[10]);\n" +
+                "    } catch (Exception e) {\n" +
+                "      System.out.println(\"Something went wrong.\");\n" +
+                "    } finally {\n" +
+                "      System.out.println(\"The 'try catch' is finished.\");\n" +
                 "    }\n" +
-                "}";
+                "  }\n" +
+                "}" +
+                "";
 
         CompilationUnit cu = StaticJavaParser.parse(code2);
-        IfNodeFinder cf = new IfNodeFinder(cu);
+        TryNodeFinder cf = new TryNodeFinder(cu);
         System.out.println(cf.correctAmountOfOccurrences(1));
-    }
-}
-
-
-class test1{
-    int a, b = 0;
-    private int looping(){
-        for(int i=0;i <10; i++){
-            for(int j=0; j<10; i++){
-                if(true){
-                    System.out.print(i);
-                }
-            }
-        }
-        return 1;
     }
 }

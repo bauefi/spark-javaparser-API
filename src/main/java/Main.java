@@ -181,6 +181,146 @@ public class Main {
                 return "Failed to query code, make sure the code snippet sent compiles";
             }
         });
+
+        post("/break", (request, response) -> {
+            // 1. Validate request parameters
+            validateRequestParamsElement(request);
+
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                BreakNodeFinder breakNodeFinder = new BreakNodeFinder(compilationUnit);
+                response.status(200);
+                return breakNodeFinder.correctAmountOfOccurrences(cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
+        });
+
+        post("/constructor", (request, response) -> {
+            // 1. Validate request parameters
+            validateRequestParamsElement(request);
+
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                ConstructorNodeFinder constructorNodeFinder = new ConstructorNodeFinder(compilationUnit);
+                response.status(200);
+                return constructorNodeFinder.correctAmountOfOccurrences(cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
+        });
+
+        post("/enum", (request, response) -> {
+            // 1. Validate request parameters
+            validateRequestParamsElement(request);
+
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                EnumNodeFinder enumNodeFinder = new EnumNodeFinder(compilationUnit);
+                response.status(200);
+                return enumNodeFinder.correctAmountOfOccurrences(cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
+        });
+
+        post("/lambda", (request, response) -> {
+            // 1. Validate request parameters
+            validateRequestParamsElement(request);
+
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                LambdaNodeFinder lambdaNodeFinder = new LambdaNodeFinder(compilationUnit);
+                response.status(200);
+                return lambdaNodeFinder.correctAmountOfOccurrences(cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
+        });
+
+        post("/switch", (request, response) -> {
+            // 1. Validate request parameters
+            validateRequestParamsElement(request);
+
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                SwitchNodeFinder switchNodeFinder = new SwitchNodeFinder(compilationUnit);
+                response.status(200);
+                return switchNodeFinder.correctAmountOfOccurrences(cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
+        });
+
+        post("/throw", (request, response) -> {
+            // 1. Validate request parameters
+            validateRequestParamsElement(request);
+
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                ThrowNodeFinder throwNodeFinder = new ThrowNodeFinder(compilationUnit);
+                response.status(200);
+                return throwNodeFinder.correctAmountOfOccurrences(cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
+        });
+
+        post("/try", (request, response) -> {
+            // 1. Validate request parameters
+            validateRequestParamsElement(request);
+
+            // 2. Translate query parameters
+            String code                 = request.queryParams("code");
+            Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
+
+            // 3. Query code
+            try {
+                CompilationUnit compilationUnit = StaticJavaParser.parse(code);
+                TryNodeFinder tryNodeFinder = new TryNodeFinder(compilationUnit);
+                response.status(200);
+                return tryNodeFinder.correctAmountOfOccurrences(cardinality);
+            } catch(Exception e){
+                response.status(400);
+                return "Failed to query code, make sure the code snippet sent compiles";
+            }
+        });
     }
 
     static int getHerokuAssignedPort() {
