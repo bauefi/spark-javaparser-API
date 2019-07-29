@@ -39,19 +39,23 @@ public class ClassInterfaceNodeFinder {
     //For a given class or Interface specification checks whether exactly the desired cardinality is present in the AST
     public boolean correctAmountOfDeclarations(Boolean isInterface, String accessSpecifier, String nonAccessSpecifier, String name, int cardinality){
         List<ClassInterfaceDeclaration> matches = this.crawlAST();
+        System.out.println(isInterface);
+        System.out.println(accessSpecifier);
+        System.out.println(nonAccessSpecifier);
+        System.out.println(name);
+        System.out.println(cardinality);
+
         int count = 0;
         for (int i = 0; i < matches.size(); i++) {
             ClassInterfaceDeclaration temp = matches.get(i);
             String acs = temp.getAccessSpecifier().replaceAll("\\s+","");
             String nam = temp.getNonAccessModifier().replaceAll("\\s+","");
             String n = temp.getName().replaceAll("\\s+","");
-            System.out.println(acs);
-            System.out.println(nam);
 
             if(
-                (acs.equals(accessSpecifier) || accessSpecifier == "") &&
-                (nam.equals(nonAccessSpecifier) || nonAccessSpecifier == "") &&
-                (n.equals(name) || name == "") &&
+                (acs.equals(accessSpecifier) || accessSpecifier == null) &&
+                (nam.equals(nonAccessSpecifier) || nonAccessSpecifier == null) &&
+                (n.equals(name) || name == null) &&
                 (temp.isInterface() == isInterface)
             ){
                 ++count;

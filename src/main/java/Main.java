@@ -21,7 +21,7 @@ public class Main {
 
             // 2. Translate query parameters
             String code                 = request.queryParams("code");
-            String name                 = request.queryParams("name");
+            String name                 = ParameterTranslater.translateTypedString(request.queryParams("name"));
             String accessSpecifier      = ParameterTranslater.translateAccessSpecifier(request.queryParams("accessSpecifier"));
             String nonAccessModifier    = ParameterTranslater.translateNonAccessModifier(request.queryParams("nonAccesSpecifier"));
             Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
@@ -50,7 +50,7 @@ public class Main {
 
             // 2. Translate query parameters
             String code                 = request.queryParams("code");
-            String name                 = request.queryParams("name");
+            String name                 = ParameterTranslater.translateTypedString(request.queryParams("name"));
             String accessSpecifier      = ParameterTranslater.translateAccessSpecifier(request.queryParams("accessSpecifier"));
             String nonAccessModifier    = ParameterTranslater.translateNonAccessModifier(request.queryParams("nonAccesSpecifier"));
             Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
@@ -77,8 +77,8 @@ public class Main {
 
             // 2. Translate query parameters
             String code                 = request.queryParams("code");
-            String name                 = request.queryParams("name");
-            String dataType             = request.queryParams("dataType");
+            String name                 = ParameterTranslater.translateTypedString(request.queryParams("name"));
+            String dataType             = ParameterTranslater.translateTypedString(request.queryParams("dataType"));
             String accessSpecifier      = ParameterTranslater.translateAccessSpecifier(request.queryParams("accessSpecifier"));
             String nonAccessModifier    = ParameterTranslater.translateNonAccessModifier(request.queryParams("nonAccesSpecifier"));
             Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));
@@ -104,8 +104,8 @@ public class Main {
 
             // 2. Translate query parameters
             String code                 = request.queryParams("code");
-            String name                 = request.queryParams("name");
-            String dataType             = request.queryParams("dataType");
+            String name                 = ParameterTranslater.translateTypedString(request.queryParams("name"));
+            String dataType             = ParameterTranslater.translateTypedString(request.queryParams("dataType"));
             String accessSpecifier      = ParameterTranslater.translateAccessSpecifier(request.queryParams("accessSpecifier"));
             String nonAccessModifier    = ParameterTranslater.translateNonAccessModifier(request.queryParams("nonAccesSpecifier"));
             Integer cardinality         = ParameterTranslater.translateCardinality(request.queryParams("cardinality"));

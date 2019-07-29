@@ -48,10 +48,10 @@ public class FunctionNodeFinder {
             String n = temp.getName().replaceAll("\\s+","");
 
             if(
-                    (acs.equals(accessSpecifier) || accessSpecifier == "") &&
-                    (nam.equals(nonAccessSpecifier) || nonAccessSpecifier == "") &&
-                    (type.equals(dataType) || dataType == "") &&
-                    (n.equals(name) || name == "")
+                    (acs.equals(accessSpecifier) || accessSpecifier == null) &&
+                    (nam.equals(nonAccessSpecifier) || nonAccessSpecifier == null) &&
+                    (type.equals(dataType) || dataType == null) &&
+                    (n.equals(name) || name == null)
             ){
                 ++count;
             }

@@ -5,7 +5,8 @@ public class ParameterTranslater {
             case "1": return "public";
             case "2": return "private";
             case "3": return "protected";
-            default: return "";
+            case "4": return "";
+            default: return null;
         }
     }
 
@@ -14,7 +15,8 @@ public class ParameterTranslater {
             case "1": return "static";
             case "2": return "final";
             case "3": return "abstract";
-            default: return "";
+            case "4": return "";
+            default: return null;
         }
     }
 
@@ -34,4 +36,10 @@ public class ParameterTranslater {
         }
     }
 
+    public static String translateTypedString(String name) {
+        if(name == ""){
+            return null;
+        }
+        return name;
+    }
 }
