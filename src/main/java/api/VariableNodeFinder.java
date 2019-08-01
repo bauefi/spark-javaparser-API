@@ -24,8 +24,16 @@ public class VariableNodeFinder {
                 NodeList<Modifier> specifiers = vd.getModifiers();
                 NodeList<VariableDeclarator> variables = vd.getVariables();
                 String dataType = vd.getElementType().toString();
-                String accessSpecifier = specifiers.size() >= 1 ? specifiers.get(0).toString() : "";
-                String nonAccessModifier = specifiers.size() >= 2 ? specifiers.get(1).toString() : "";
+                String accessSpecifier;
+                String nonAccessModifier;
+                //If there is no access specifier, the non access specifier is the first specifier
+                if(vd.getAccessSpecifier().toString().replaceAll("\\s+","").equals("PACKAGE_PRIVATE")){
+                    accessSpecifier = "";
+                    nonAccessModifier = specifiers.size() >= 1 ? specifiers.get(0).toString(): "";
+                } else {
+                    accessSpecifier = specifiers.size() >= 1 ? specifiers.get(0).toString() : "";
+                    nonAccessModifier = specifiers.size() >= 2 ? specifiers.get(1).toString(): "";
+                }
                 for(int i=0; i<variables.size(); i++){
                     String name = variables.get(i).getName().toString();
                     VariableDeclaration dec = new VariableDeclaration(accessSpecifier, nonAccessModifier, dataType, name);
@@ -51,6 +59,7 @@ public class VariableNodeFinder {
             String nam = temp.getNonAccessModifier().replaceAll("\\s+","");
             String type = temp.getDataType().replaceAll("\\s+","");
             String n = temp.getName().replaceAll("\\s+","");
+
             if(
                     (acs.equals(accessSpecifier) || accessSpecifier == null) &&
                             (nam.equals(nonAccessSpecifier) || nonAccessSpecifier == null) &&

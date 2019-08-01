@@ -21,10 +21,18 @@ public class ClassInterfaceNodeFinder {
             public void visit(ClassOrInterfaceDeclaration cd, List<ClassInterfaceDeclaration> collector) {
             super.visit(cd, collector);
             NodeList<Modifier> specifiers = cd.getModifiers();
+            String accessSpecifier;
+            String nonAccessModifier;
+            //If there is no access specifier, the non access specifier is the first specifier
+            if(cd.getAccessSpecifier().toString().replaceAll("\\s+","").equals("PACKAGE_PRIVATE")){
+                accessSpecifier = "";
+                nonAccessModifier = specifiers.size() >= 1 ? specifiers.get(0).toString(): "";
+            } else {
+                accessSpecifier = specifiers.size() >= 1 ? specifiers.get(0).toString(): "";
+                nonAccessModifier = specifiers.size() >= 2 ? specifiers.get(1).toString(): "";
+            }
             String name = cd.getNameAsString();
             boolean isInterface = cd.isInterface();
-            String accessSpecifier = specifiers.size() >= 1 ? specifiers.get(0).toString(): "";
-            String nonAccessModifier = specifiers.size() >= 2 ? specifiers.get(1).toString(): "";
             ClassInterfaceDeclaration dec = new ClassInterfaceDeclaration(isInterface, accessSpecifier, nonAccessModifier, name);
             collector.add(dec);
             }
@@ -41,11 +49,6 @@ public class ClassInterfaceNodeFinder {
     //For a given class or Interface specification checks whether exactly the desired cardinality is present in the AST
     public boolean correctAmountOfDeclarations(Boolean isInterface, String accessSpecifier, String nonAccessSpecifier, String name, int cardinality){
         List<ClassInterfaceDeclaration> matches = this.crawlAST();
-        System.out.println(isInterface);
-        System.out.println(accessSpecifier);
-        System.out.println(nonAccessSpecifier);
-        System.out.println(name);
-        System.out.println(cardinality);
 
         int count = 0;
         for (int i = 0; i < matches.size(); i++) {

@@ -11,7 +11,6 @@ public class ThrowNodeFinder extends ElementNodeFinder{
             @Override
             public void visit(ThrowStmt el, Counter counter) {
                 counter.increment();
-                System.out.println(el);
                 super.visit(el, counter);
             }
         };

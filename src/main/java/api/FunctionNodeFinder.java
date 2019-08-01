@@ -23,8 +23,16 @@ public class FunctionNodeFinder {
                 NodeList<Modifier> specifiers = md.getModifiers();
                 String name = md.getNameAsString();
                 String dataType = md.getTypeAsString();
-                String accessSpecifier = specifiers.size() >= 1 ? specifiers.get(0).toString(): "";
-                String nonAccessModifier = specifiers.size() >= 2 ? specifiers.get(1).toString(): "";
+                String accessSpecifier;
+                String nonAccessModifier;
+                //If there is no access specifier, the non access specifier is the first specifier
+                if(md.getAccessSpecifier().toString().replaceAll("\\s+","").equals("PACKAGE_PRIVATE")){
+                    accessSpecifier = "";
+                    nonAccessModifier = specifiers.size() >= 1 ? specifiers.get(0).toString(): "";
+                } else {
+                    accessSpecifier = specifiers.size() >= 1 ? specifiers.get(0).toString() : "";
+                    nonAccessModifier = specifiers.size() >= 2 ? specifiers.get(1).toString(): "";
+                }
                 FunctionDeclaration dec = new FunctionDeclaration(accessSpecifier, nonAccessModifier, dataType, name);
                 collector.add(dec);
             }
